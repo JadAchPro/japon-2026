@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Japon, mars 2026</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='38' fill='%23d8432f'/></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Carnet de voyage projeté : encre sombre, vermillon torii, papier washi */
+:root{
+  --ink:#121110; --ink2:#1b1a18; --paper:#f1ece1; --paper-dim:#b9b2a2;
+  --verm:#d8432f; --gold:#c9a86a; --line:#35322c;
+  --font-head:'Shippori Mincho',serif; --font-body:'Inter',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-size:16px}
+
+/* ---------- gate ---------- */
+#gate{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:200;padding:24px}
+#gate form{display:flex;flex-direction:column;gap:14px;align-items:center;max-width:340px;text-align:center}
+#gate .kanji{font-family:var(--font-head);color:var(--verm);font-size:3rem;line-height:1}
+#gate h1{font-family:var(--font-head);font-size:1.6rem;margin:0;font-weight:500}
+#gate p{color:var(--paper-dim);margin:0;font-size:.9rem}
+#gate input{background:var(--ink2);border:1px solid var(--line);color:var(--paper);padding:11px 14px;border-radius:8px;font-size:1rem;width:220px;text-align:center}
+#gate button{background:var(--verm);color:#fff;border:none;padding:11px 26px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font-body)}
+#gate .err{color:var(--verm);font-size:.85rem;min-height:1.1em;margin:0}
+
+/* ---------- deck ---------- */
+#deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .45s ease;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px))}
+.slide.active{opacity:1;visibility:visible}
+
+/* cover */
+.s-cover{gap:18px;text-align:center}
+.s-cover .kanji{font-family:var(--font-head);color:var(--verm);font-size:clamp(3rem,9vw,5.5rem);line-height:1.1}
+.s-cover h1{font-family:var(--font-head);font-weight:700;font-size:clamp(2.2rem,7vw,4.5rem);margin:0;letter-spacing:.04em}
+.s-cover .dates{color:var(--gold);letter-spacing:.25em;text-transform:uppercase;font-size:clamp(.8rem,2vw,1rem)}
+.s-cover .hint{color:var(--paper-dim);font-size:.85rem;margin-top:26px}
+
+/* text slides (intro, fin) */
+.s-text{max-width:720px;margin:0 auto;gap:14px;text-align:center}
+.s-text h2{font-family:var(--font-head);font-size:clamp(1.6rem,4.5vw,2.6rem);margin:0;font-weight:500}
+.s-text p{color:var(--paper-dim);line-height:1.75;margin:0;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.s-text .stats{display:flex;gap:34px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.s-text .stat b{display:block;font-family:var(--font-head);font-size:clamp(1.8rem,5vw,2.6rem);color:var(--gold);font-variant-numeric:tabular-nums}
+.s-text .stat span{color:var(--paper-dim);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase}
+
+/* day divider */
+.s-day{gap:10px;text-align:center;max-width:780px;margin:0 auto}
+.s-day .jour{color:var(--verm);letter-spacing:.3em;text-transform:uppercase;font-size:clamp(.75rem,1.8vw,.9rem);font-variant-numeric:tabular-nums}
+.s-day h2{font-family:var(--font-head);font-size:clamp(2rem,6vw,3.6rem);margin:0;font-weight:700;text-wrap:balance}
+.s-day .resume{color:var(--paper-dim);line-height:1.8;font-size:clamp(.92rem,2.2vw,1.08rem);margin-top:10px}
+.s-day .hl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.s-day .hl span{border:1px solid var(--line);color:var(--gold);padding:5px 13px;border-radius:999px;font-size:.78rem}
+.s-day .npics{color:var(--paper-dim);font-size:.78rem;margin-top:20px;letter-spacing:.1em}
+
+/* photo */
+.s-photo{padding:0}
+.s-photo img{max-width:100%;max-height:100%;object-fit:contain;opacity:0;transition:opacity .4s}
+.s-photo img.ld{opacity:1}
+.s-photo .cap{position:absolute;bottom:calc(46px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:var(--paper-dim);font-size:.75rem;letter-spacing:.12em;text-shadow:0 1px 4px #000}
+
+/* video */
+.s-video .frame{width:min(1100px,94vw);aspect-ratio:16/10;max-height:78vh;background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--paper-dim)}
+.s-video iframe{width:100%;height:100%;border:none}
+.s-video .cap{margin-top:10px;color:var(--paper-dim);font-size:.75rem;letter-spacing:.12em}
+
+/* carte */
+.s-map .frame{width:min(1200px,94vw);height:min(72vh,700px);background:var(--ink2);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.s-map iframe{width:100%;height:100%;border:none}
+.s-map h2{font-family:var(--font-head);font-size:clamp(1.4rem,4vw,2.2rem);margin:0 0 14px;font-weight:500}
+.s-map .lien{margin-top:12px;font-size:.85rem}
+.s-map a{color:var(--gold)}
+
+/* ---------- chrome ---------- */
+#chrome{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;gap:14px;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(10,9,8,.85));font-size:.78rem;color:var(--paper-dim)}
+#chrome .where{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.08em}
+#chrome .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+#chrome button{background:none;border:1px solid var(--line);color:var(--paper-dim);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:.78rem}
+#chrome button:hover{color:var(--paper);border-color:var(--paper-dim)}
+#bar{position:fixed;top:0;left:0;height:3px;background:var(--verm);z-index:60;transition:width .3s;width:0}
+.tapzone{position:fixed;top:0;bottom:60px;width:22%;z-index:40;cursor:pointer}
+#zprev{left:0}#znext{right:0}
+
+/* sommaire */
+#toc{position:fixed;inset:0;background:rgba(14,13,12,.96);z-index:100;display:none;overflow-y:auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 60px}
+#toc.open{display:block}
+#toc .in{max-width:860px;margin:0 auto}
+#toc h2{font-family:var(--font-head);font-weight:500;margin:0 0 22px;display:flex;justify-content:space-between;align-items:center}
+#toc h2 button{background:none;border:1px solid var(--line);color:var(--paper);border-radius:8px;padding:6px 14px;cursor:pointer}
+#toc .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+#toc .item{background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+#toc .item:hover{border-color:var(--gold)}
+#toc .item .d{color:var(--verm);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-variant-numeric:tabular-nums}
+#toc .item .t{font-family:var(--font-head);font-size:1.02rem;margin-top:3px}
+#toc .item .n{color:var(--paper-dim);font-size:.75rem;margin-top:5px}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <form id="gateForm">
+    <div class="kanji">日本</div>
+    <h1>Japon, mars 2026</h1>
+    <p>Carnet de voyage de Jad &amp; Rami</p>
+    <input type="password" id="pw" placeholder="Mot de passe" autocomplete="off" autofocus>
+    <button type="submit">Entrer</button>
+    <p class="err" id="gateErr"></p>
+  </form>
+</div>
+
+<div id="bar"></div>
+<div id="deck"></div>
+<div class="tapzone" id="zprev"></div>
+<div class="tapzone" id="znext"></div>
+<div id="chrome">
+  <span class="where" id="where"></span>
+  <button id="btnToc">Sommaire</button>
+  <span class="num" id="num"></span>
+</div>
+
+<div id="toc">
+  <div class="in">
+    <h2>Sommaire <button id="tocClose">Fermer ✕</button></h2>
+    <div class="grid" id="tocGrid"></div>
+  </div>
+</div>
+
+<script src="deck-data.js"></script>
+<script>
+(function(){
+"use strict";
+var PW="koine";
+var gate=document.getElementById('gate');
+try{ if(sessionStorage.getItem('jp_ok')==='1') gate.style.display='none'; }catch(e){}
+document.getElementById('gateForm').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  if(document.getElementById('pw').value.trim().toLowerCase()===PW){
+    gate.style.display='none';
+    try{ sessionStorage.setItem('jp_ok','1'); }catch(e){}
+  } else { document.getElementById('gateErr').textContent='Mot de passe incorrect'; }
+});
+
+function big(id){ return 'https://lh3.googleusercontent.com/d/'+id+'=w1920'; }
+
+/* ---- construire les slides ---- */
+var slides=[]; // {el, type, label, lazy?}
+var deck=document.getElementById('deck');
+function add(el,label){ deck.appendChild(el); slides.push({el:el,label:label}); return slides.length-1; }
+function div(cls){ var e=document.createElement('div'); e.className='slide '+cls; return e; }
+var tocEntries=[]; // {idx,date,titre,n}
+
+/* cover */
+var cv=div('s-cover');
+cv.innerHTML='<div class="kanji">日本</div><h1>'+DECK.titre+'</h1><div class="dates">'+DECK.dates+'</div><p class="hint">→ flèches, espace ou glisser pour avancer · S : sommaire</p>';
+add(cv,'');
+
+/* intro */
+var it=div('s-text');
+it.innerHTML='<h2>Le voyage</h2><p>'+DECK.intro+'</p><div class="stats">'+DECK.stats.map(function(s){return '<div class="stat"><b>'+s[0]+'</b><span>'+s[1]+'</span></div>';}).join('')+'</div>';
+add(it,'Introduction');
+
+/* carte */
+var mp=div('s-map');
+mp.innerHTML='<h2>L’itinéraire</h2><div class="frame" data-map="1"></div><p class="lien"><a href="'+DECK.carte+'" target="_blank" rel="noopener">Ouvrir la carte interactive en plein écran ↗</a></p>';
+var MAPIDX=add(mp,'Itinéraire');
+tocEntries.push({idx:1,date:'',titre:'Introduction',n:''});
+tocEntries.push({idx:MAPIDX,date:'',titre:'Carte de l’itinéraire',n:''});
+
+/* jours */
+DECK.jours.forEach(function(j,ji){
+  var d=div('s-day');
+  var hl=(j.highlights&&j.highlights.length)?'<div class="hl">'+j.highlights.map(function(h){return '<span>'+h+'</span>';}).join('')+'</div>':'';
+  var np=j.medias.length?'<div class="npics">'+j.medias.length+' photo(s) et vidéo(s)</div>':'';
+  d.innerHTML='<div class="jour">'+j.datefr+' · jour '+(ji+1)+'</div><h2>'+j.titre+'</h2><p class="resume">'+j.resume+'</p>'+hl+np;
+  var di=add(d,j.datefr+' · '+j.titre);
+  tocEntries.push({idx:di,date:j.datefr,titre:j.titre,n:j.medias.length?j.medias.length+' médias':''});
+  j.medias.forEach(function(m,mi){
+    var lab=j.datefr+' · '+j.titre;
+    if(m.v){
+      var sv=div('s-video');
+      sv.innerHTML='<div class="frame" data-vid="'+m.i+'">vidéo</div><div class="cap">'+lab+' · vidéo</div>';
+      add(sv,lab);
+    } else {
+      var sp=div('s-photo');
+      sp.innerHTML='<img data-src="'+big(m.i)+'" alt=""><div class="cap">'+lab+'</div>';
+      add(sp,lab);
+    }
+  });
+});
+
+/* fin */
+var fn=div('s-text');
+fn.innerHTML='<h2>'+DECK.fin.titre+'</h2><p>'+DECK.fin.texte+'</p><div class="kanji" style="font-family:var(--font-head);color:var(--verm);font-size:2.4rem;margin-top:18px">ありがとう</div>';
+add(fn,'Fin');
+
+/* ---- navigation ---- */
+var cur=0,N=slides.length;
+function materialize(i){
+  if(i<0||i>=N) return;
+  var el=slides[i].el;
+  el.querySelectorAll('img[data-src]').forEach(function(im){
+    im.src=im.dataset.src; im.removeAttribute('data-src');
+    im.addEventListener('load',function(){ im.classList.add('ld'); });
+  });
+}
+function mountVideo(i){
+  var f=slides[i].el.querySelector('[data-vid]');
+  if(f&&!f.querySelector('iframe')){
+    f.innerHTML='<iframe src="https://drive.google.com/file/d/'+f.dataset.vid+'/preview" allow="autoplay" allowfullscreen></iframe>';
+  }
+}
+function unmountVideo(i){
+  var f=slides[i].el.querySelector('[data-vid]');
+  if(f){ f.innerHTML='vidéo'; }
+}
+function mountMap(i){
+  var f=slides[i].el.querySelector('[data-map]');
+  if(f&&!f.querySelector('iframe')){
+    f.innerHTML='<iframe src="'+DECK.carte+'" loading="lazy"></iframe>';
+  }
+}
+function go(i){
+  if(i<0) i=0; if(i>=N) i=N-1;
+  if(i===cur&&slides[cur].el.classList.contains('active')) return;
+  var prev=cur;
+  slides.forEach(function(s,k){ s.el.classList.toggle('active',k===i); });
+  if(Math.abs(prev-i)>0&&slides[prev].el.querySelector('[data-vid]')) unmountVideo(prev);
+  cur=i;
+  for(var k=i-1;k<=i+3;k++) materialize(k);
+  if(slides[i].el.querySelector('[data-vid]')) mountVideo(i);
+  if(slides[i].el.querySelector('[data-map]')) mountMap(i);
+  document.getElementById('num').textContent=(i+1)+' / '+N;
+  document.getElementById('where').textContent=slides[i].label;
+  document.getElementById('bar').style.width=((i)/(N-1)*100)+'%';
+  try{ localStorage.setItem('jp_pos',String(i)); }catch(e){}
+}
+function next(){ go(cur+1); } function prevS(){ go(cur-1); }
+document.getElementById('znext').addEventListener('click',next);
+document.getElementById('zprev').addEventListener('click',prevS);
+document.addEventListener('keydown',function(ev){
+  if(gate.style.display!=='none'&&getComputedStyle(gate).display!=='none') return;
+  if(document.getElementById('toc').classList.contains('open')){
+    if(ev.key==='Escape') toggleToc(false);
+    return;
+  }
+  if(ev.key==='ArrowRight'||ev.key===' '||ev.key==='PageDown'){ ev.preventDefault(); next(); }
+  else if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ ev.preventDefault(); prevS(); }
+  else if(ev.key==='Home'){ go(0); }
+  else if(ev.key==='End'){ go(N-1); }
+  else if(ev.key.toLowerCase()==='s'){ toggleToc(); }
+});
+var tx=null,ty=null;
+document.addEventListener('touchstart',function(ev){ if(ev.touches.length===1){ tx=ev.touches[0].clientX; ty=ev.touches[0].clientY; } },{passive:true});
+document.addEventListener('touchend',function(ev){
+  if(tx===null) return;
+  var dx=ev.changedTouches[0].clientX-tx, dy=ev.changedTouches[0].clientY-ty;
+  tx=null;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){ if(dx<0) next(); else prevS(); }
+},{passive:true});
+
+/* ---- sommaire ---- */
+var toc=document.getElementById('toc');
+function toggleToc(force){
+  var open=(typeof force==='boolean')?force:!toc.classList.contains('open');
+  toc.classList.toggle('open',open);
+}
+document.getElementById('btnToc').addEventListener('click',function(){toggleToc();});
+document.getElementById('tocClose').addEventListener('click',function(){toggleToc(false);});
+var tg=document.getElementById('tocGrid');
+tocEntries.forEach(function(t){
+  var e=document.createElement('div'); e.className='item';
+  e.innerHTML='<div class="d">'+(t.date||'•')+'</div><div class="t">'+t.titre+'</div><div class="n">'+t.n+'</div>';
+  e.addEventListener('click',function(){ toggleToc(false); go(t.idx); });
+  tg.appendChild(e);
+});
+
+/* reprendre où on en était */
+var start=0;
+try{ var sp=parseInt(localStorage.getItem('jp_pos')||'0',10); if(sp>0&&sp<N) start=sp; }catch(e){}
+go(start);
+})();
+</script>
+</body>
+</html>
