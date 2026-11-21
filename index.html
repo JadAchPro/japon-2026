@@ -112,9 +112,9 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 #zprev{left:max(8px,env(safe-area-inset-left,0px))}
 
 /* ---------- mini-carte progression (en bas du récit) ---------- */
-#mini{display:none;width:100%;max-width:230px;background:rgba(27,26,24,.6);border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px;margin-top:14px;flex:none}
+#mini{display:none;width:100%;background:rgba(27,26,24,.6);border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px;margin-top:14px;flex:none}
 #mini.on{display:block}
-#mini svg{display:block;width:100%;height:auto}
+#mini svg{display:block;width:100%;height:auto;max-height:44vh}
 #mini .lbl{text-align:center;color:var(--paper-dim);font-size:.68rem;letter-spacing:.08em;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #mini .lbl b{color:var(--gold);font-weight:600}
 #mini .coast{fill:#1b1a18;stroke:#3a362f;stroke-width:1}
@@ -125,7 +125,7 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 #mini .curr{fill:var(--verm)}
 @keyframes mhalo{0%{r:3.5;opacity:.75}100%{r:10;opacity:0}}
 #mini .halo{fill:var(--verm);animation:mhalo 1.6s ease-out infinite}
-@media (max-width:860px){#mini{max-width:200px;margin:10px auto 0}}
+@media (max-width:860px){#mini{margin:10px auto 0}}
 
 /* sommaire */
 #toc{position:fixed;inset:0;background:rgba(14,13,12,.96);z-index:100;display:none;overflow-y:auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 60px}
@@ -354,8 +354,8 @@ tocEntries.forEach(function(t){
 });
 
 /* ---- mini-carte de progression ---- */
-var JP='M87.7 83.6 L89.5 89.5 L81.5 99.9 L75.6 94.4 L68.3 98.4 L64.5 108.5 L55.2 103.6 L55.3 95.4 L63.2 85.1 L71.3 87.1 L77.2 79.9 L87.7 83.6ZM178.2 32.0 L172.9 45.8 L175.3 54.4 L167.9 66.5 L149.7 74.7 L124.5 75.7 L104.2 95.4 L94.6 88.8 L94.0 75.9 L69.1 79.7 L52.2 87.8 L35.5 88.1 L50.0 100.8 L40.5 130.1 L31.2 137.3 L24.3 130.6 L27.8 115.1 L18.8 110.1 L13.0 98.3 L26.5 93.0 L34.0 82.1 L48.3 73.2 L58.8 61.5 L87.3 56.3 L102.5 59.8 L117.5 29.2 L127.0 37.4 L148.0 20.2 L156.1 13.5 L165.1 -7.6 L162.6 -26.9 L168.7 -37.8 L183.8 -41.0 L191.6 -17.1 L191.2 -3.1 L178.0 14.2 L178.2 32.0Z';
-var CITY={Tokyo:[159.9,57],Osaka:[100,74.2],Nara:[104.8,74.4],Kobe:[95.7,74.3],Kyoto:[103.8,68.7],Himeji:[88.5,71.7],Naoshima:[78.5,78.2],Hiroshima:[56.6,79.3],Miyajima:[54.6,81.3],Nagasaki:[19.7,107.7],Kagoshima:[29.4,127.6],Ibusuki:[30.5,133.5],Beppu:[42.7,98.5],Koyasan:[101.2,82.5]};
+var JP='M67.1 169.9 L68.6 174.9 L62.1 183.8 L57.4 179.1 L51.5 182.5 L48.4 191.0 L41.0 186.9 L41.0 179.9 L47.4 171.2 L53.9 172.9 L58.7 166.8 L67.1 169.9ZM140.0 126.3 L135.6 137.9 L137.6 145.2 L131.6 155.5 L117.0 162.4 L96.8 163.3 L80.4 179.9 L72.7 174.3 L72.2 163.4 L52.2 166.6 L38.6 173.5 L25.1 173.8 L36.8 184.5 L29.1 209.3 L21.7 215.4 L16.1 209.8 L18.9 196.6 L11.7 192.4 L7.0 182.4 L17.9 177.9 L23.9 168.7 L35.5 161.2 L43.9 151.2 L66.8 146.9 L79.1 149.8 L91.1 123.9 L98.7 130.9 L115.6 116.3 L122.1 110.6 L129.4 92.8 L127.4 76.4 L132.3 67.2 L144.5 64.5 L150.7 84.7 L150.4 96.5 L139.8 111.2 L140.0 126.3ZM173.7 23.7 L181.8 26.8 L189.9 20.6 L192.4 37.0 L175.4 41.0 L165.3 55.5 L147.3 45.5 L141.0 61.5 L128.2 61.7 L126.6 47.2 L132.3 36.0 L144.6 35.2 L148.0 15.0 L151.4 3.6 L164.9 18.8 L173.7 23.7Z';
+var CITY={Tokyo:[125.2,147.5],Osaka:[77.0,162.0],Nara:[80.9,162.1],Kobe:[73.5,162.1],Kyoto:[80.1,157.4],Himeji:[67.7,159.9],Naoshima:[59.7,165.4],Hiroshima:[42.1,166.3],Miyajima:[40.5,168.0],Nagasaki:[12.4,190.3],Kagoshima:[20.2,207.2],Ibusuki:[21.1,212.2],Beppu:[30.9,182.6],Koyasan:[78.0,169.0]};
 var DAYCITY=['Tokyo','Tokyo','Tokyo','Osaka','Nara','Kobe','Osaka','Kyoto','Kyoto','Himeji','Naoshima','Hiroshima','Miyajima','Nagasaki','Kagoshima','Ibusuki','Beppu','Osaka','Koyasan','Tokyo','Tokyo','Tokyo','Tokyo','Tokyo','Tokyo'];
 var ROUTE=[['Tokyo',0],['Osaka',3],['Kyoto',7],['Himeji',9],['Naoshima',10],['Hiroshima',11],['Nagasaki',13],['Kagoshima',14],['Ibusuki',15],['Beppu',16],['Osaka',17],['Tokyo',19]];
 var FIRSTDAY={Tokyo:0,Osaka:3,Nara:4,Kobe:5,Kyoto:7,Himeji:9,Naoshima:10,Hiroshima:11,Miyajima:12,Nagasaki:13,Kagoshima:14,Ibusuki:15,Beppu:16,Koyasan:18};
@@ -365,7 +365,7 @@ var mini=document.getElementById('mini');
   var dots=Object.keys(CITY).map(function(c){
     return '<circle class="dot" id="md-'+c+'" cx="'+CITY[c][0]+'" cy="'+CITY[c][1]+'" r="2.2"/>';
   }).join('');
-  mini.innerHTML='<svg viewBox="0 0 200 145" aria-hidden="true">'
+  mini.innerHTML='<svg viewBox="0 0 200 227.5" aria-hidden="true">'
     +'<path class="coast" d="'+JP+'"/>'
     +'<polyline class="rfull" points="'+fullPts+'"/>'
     +'<polyline class="rdone" id="mprog" points=""/>'
