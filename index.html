@@ -48,32 +48,54 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 .s-text .stat b{display:block;font-family:var(--font-head);font-size:clamp(1.8rem,5vw,2.6rem);color:var(--gold);font-variant-numeric:tabular-nums}
 .s-text .stat span{color:var(--paper-dim);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase}
 
-/* day divider */
-.s-day{gap:10px;text-align:center;max-width:780px;margin:0 auto}
-.s-day .jour{color:var(--verm);letter-spacing:.3em;text-transform:uppercase;font-size:clamp(.75rem,1.8vw,.9rem);font-variant-numeric:tabular-nums}
-.s-day h2{font-family:var(--font-head);font-size:clamp(2rem,6vw,3.6rem);margin:0;font-weight:700;text-wrap:balance}
-.s-day .resume{color:var(--paper-dim);line-height:1.8;font-size:clamp(.92rem,2.2vw,1.08rem);margin-top:10px}
-.s-day .hl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
-.s-day .hl span{border:1px solid var(--line);color:var(--gold);padding:5px 13px;border-radius:999px;font-size:.78rem}
-.s-day .npics{color:var(--paper-dim);font-size:.78rem;margin-top:20px;letter-spacing:.1em}
-
-/* photo */
-.s-photo{padding:0}
-.s-photo img{max-width:100%;max-height:100%;object-fit:contain;opacity:0;transition:opacity .4s}
-.s-photo img.ld{opacity:1}
-.s-photo .cap{position:absolute;bottom:calc(46px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:var(--paper-dim);font-size:.75rem;letter-spacing:.12em;text-shadow:0 1px 4px #000}
-
-/* video */
-.s-video .frame{width:min(1100px,94vw);aspect-ratio:16/10;max-height:78vh;background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--paper-dim)}
-.s-video iframe{width:100%;height:100%;border:none}
-.s-video .cap{margin-top:10px;color:var(--paper-dim);font-size:.75rem;letter-spacing:.12em}
-
 /* carte */
 .s-map .frame{width:min(1200px,94vw);height:min(72vh,700px);background:var(--ink2);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
 .s-map iframe{width:100%;height:100%;border:none}
 .s-map h2{font-family:var(--font-head);font-size:clamp(1.4rem,4vw,2.2rem);margin:0 0 14px;font-weight:500}
 .s-map .lien{margin-top:12px;font-size:.85rem}
 .s-map a{color:var(--gold)}
+
+/* ---------- page journée : récit + mosaïque ---------- */
+.s-jour{flex-direction:row;align-items:stretch;justify-content:stretch;gap:0;padding-top:14px;padding-bottom:58px}
+.s-jour .recit{flex:0 0 380px;max-width:42%;overflow-y:auto;padding:28px 28px 28px 6px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin}
+.s-jour .recit .jour{color:var(--verm);letter-spacing:.3em;text-transform:uppercase;font-size:.78rem;font-variant-numeric:tabular-nums}
+.s-jour .recit h2{font-family:var(--font-head);font-size:clamp(1.5rem,2.6vw,2.2rem);margin:0;font-weight:700;text-wrap:balance}
+.s-jour .recit .resume{color:var(--paper-dim);line-height:1.8;font-size:.95rem;margin:0}
+.s-jour .recit .hl{display:flex;gap:8px;flex-wrap:wrap}
+.s-jour .recit .hl span{border:1px solid var(--line);color:var(--gold);padding:4px 11px;border-radius:999px;font-size:.74rem}
+.s-jour .recit .astuce{color:var(--paper-dim);font-size:.72rem;letter-spacing:.08em;margin-top:auto;padding-top:14px}
+.s-jour .mur{flex:1;overflow-y:auto;padding:8px 4px 8px 0;scrollbar-width:thin}
+.s-jour .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));grid-auto-rows:120px;grid-auto-flow:dense;gap:8px}
+.s-jour .tuile{position:relative;border-radius:8px;overflow:hidden;background:var(--ink2);cursor:zoom-in;border:1px solid transparent}
+.s-jour .tuile:hover{border-color:var(--gold)}
+.s-jour .tuile.g{grid-column:span 2;grid-row:span 2}
+.s-jour .tuile.h{grid-row:span 2}
+.s-jour .tuile img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.s-jour .tuile img.ld{opacity:1}
+.s-jour .tuile .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.s-jour .tuile .play b{width:44px;height:44px;border-radius:50%;background:rgba(10,9,8,.65);border:1px solid rgba(241,236,225,.5);display:flex;align-items:center;justify-content:center;color:var(--paper);font-size:1rem;padding-left:4px}
+.s-jour .vide{color:var(--paper-dim);font-size:.85rem;padding:20px 4px}
+@media (max-width:860px){
+  .s-jour{flex-direction:column;overflow-y:auto;justify-content:flex-start;padding-top:10px}
+  .s-jour .recit{flex:none;max-width:none;overflow:visible;padding:16px 4px 6px}
+  .s-jour .recit .astuce{margin-top:0;padding-top:4px}
+  .s-jour .mur{flex:none;overflow:visible;width:100%}
+  .s-jour .grille{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));grid-auto-rows:96px}
+}
+
+/* ---------- lightbox ---------- */
+#light{position:fixed;inset:0;background:rgba(8,7,6,.97);z-index:150;display:none;align-items:center;justify-content:center}
+#light.open{display:flex}
+#light .media{max-width:94vw;max-height:86vh;display:flex;align-items:center;justify-content:center}
+#light img{max-width:94vw;max-height:86vh;object-fit:contain;border-radius:4px}
+#light .frame{width:min(1100px,94vw);aspect-ratio:16/10;max-height:82vh;background:#000;border-radius:8px;overflow:hidden}
+#light iframe{width:100%;height:100%;border:none}
+#light .cap{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:var(--paper-dim);font-size:.78rem;letter-spacing:.1em}
+#light button{position:fixed;background:rgba(27,26,24,.8);border:1px solid var(--line);color:var(--paper);border-radius:50%;width:46px;height:46px;cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;z-index:155}
+#light button:hover{border-color:var(--gold)}
+#lclose{top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px))}
+#lprev{left:max(10px,env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%)}
+#lnext{right:max(10px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%)}
 
 /* ---------- chrome ---------- */
 #chrome{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;gap:14px;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(10,9,8,.85));font-size:.78rem;color:var(--paper-dim)}
@@ -82,8 +104,10 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 #chrome button{background:none;border:1px solid var(--line);color:var(--paper-dim);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:.78rem}
 #chrome button:hover{color:var(--paper);border-color:var(--paper-dim)}
 #bar{position:fixed;top:0;left:0;height:3px;background:var(--verm);z-index:60;transition:width .3s;width:0}
-.tapzone{position:fixed;top:0;bottom:60px;width:22%;z-index:40;cursor:pointer}
-#zprev{left:0}#znext{right:0}
+.nav{position:fixed;top:50%;transform:translateY(-50%);z-index:45;background:rgba(27,26,24,.72);border:1px solid var(--line);color:var(--paper-dim);border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.05rem;display:flex;align-items:center;justify-content:center}
+.nav:hover{color:var(--paper);border-color:var(--gold)}
+#znext{right:max(8px,env(safe-area-inset-right,0px))}
+#zprev{left:max(8px,env(safe-area-inset-left,0px))}
 
 /* sommaire */
 #toc{position:fixed;inset:0;background:rgba(14,13,12,.96);z-index:100;display:none;overflow-y:auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 60px}
@@ -114,8 +138,8 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 
 <div id="bar"></div>
 <div id="deck"></div>
-<div class="tapzone" id="zprev"></div>
-<div class="tapzone" id="znext"></div>
+<button class="nav" id="zprev" aria-label="Précédent">←</button>
+<button class="nav" id="znext" aria-label="Suivant">→</button>
 <div id="chrome">
   <span class="where" id="where"></span>
   <button id="btnToc">Sommaire</button>
@@ -127,6 +151,14 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
     <h2>Sommaire <button id="tocClose">Fermer ✕</button></h2>
     <div class="grid" id="tocGrid"></div>
   </div>
+</div>
+
+<div id="light">
+  <div class="media" id="lmedia"></div>
+  <div class="cap" id="lcap"></div>
+  <button id="lclose" aria-label="Fermer">✕</button>
+  <button id="lprev" aria-label="Précédent">←</button>
+  <button id="lnext" aria-label="Suivant">→</button>
 </div>
 
 <script src="deck-data.js"></script>
@@ -144,14 +176,15 @@ document.getElementById('gateForm').addEventListener('submit',function(ev){
   } else { document.getElementById('gateErr').textContent='Mot de passe incorrect'; }
 });
 
+function thumb(id){ return 'https://lh3.googleusercontent.com/d/'+id+'=w400'; }
 function big(id){ return 'https://lh3.googleusercontent.com/d/'+id+'=w1920'; }
 
 /* ---- construire les slides ---- */
-var slides=[]; // {el, type, label, lazy?}
+var slides=[]; // {el,label,medias?}
 var deck=document.getElementById('deck');
-function add(el,label){ deck.appendChild(el); slides.push({el:el,label:label}); return slides.length-1; }
+function add(el,label,medias){ deck.appendChild(el); slides.push({el:el,label:label,medias:medias||null}); return slides.length-1; }
 function div(cls){ var e=document.createElement('div'); e.className='slide '+cls; return e; }
-var tocEntries=[]; // {idx,date,titre,n}
+var tocEntries=[];
 
 /* cover */
 var cv=div('s-cover');
@@ -170,25 +203,23 @@ var MAPIDX=add(mp,'Itinéraire');
 tocEntries.push({idx:1,date:'',titre:'Introduction',n:''});
 tocEntries.push({idx:MAPIDX,date:'',titre:'Carte de l’itinéraire',n:''});
 
-/* jours */
+/* jours : une page = récit + mosaïque */
 DECK.jours.forEach(function(j,ji){
-  var d=div('s-day');
+  var d=div('s-jour');
   var hl=(j.highlights&&j.highlights.length)?'<div class="hl">'+j.highlights.map(function(h){return '<span>'+h+'</span>';}).join('')+'</div>':'';
-  var np=j.medias.length?'<div class="npics">'+j.medias.length+' photo(s) et vidéo(s)</div>':'';
-  d.innerHTML='<div class="jour">'+j.datefr+' · jour '+(ji+1)+'</div><h2>'+j.titre+'</h2><p class="resume">'+j.resume+'</p>'+hl+np;
-  var di=add(d,j.datefr+' · '+j.titre);
+  var astuce=j.medias.length?'<div class="astuce">Cliquer une photo pour l’agrandir · '+j.medias.length+' média'+(j.medias.length>1?'s':'')+'</div>':'';
+  var tuiles=j.medias.map(function(m,mi){
+    var cls='tuile'+(j.medias.length>4 ? (mi%7===0?' g':(mi%5===3?' h':'')) : (mi===0?' g':''));
+    var play=m.v?'<span class="play"><b>▶</b></span>':'';
+    return '<div class="'+cls+'" data-mi="'+mi+'"><img data-src="'+thumb(m.i)+'" alt="" loading="lazy">'+play+'</div>';
+  }).join('');
+  var mur=j.medias.length?'<div class="mur"><div class="grille">'+tuiles+'</div></div>':'<div class="mur"><p class="vide">Pas de photos sélectionnées pour cette journée.</p></div>';
+  d.innerHTML='<div class="recit"><div class="jour">'+j.datefr+' · jour '+(ji+1)+'</div><h2>'+j.titre+'</h2><p class="resume">'+j.resume+'</p>'+hl+astuce+'</div>'+mur;
+  var di=add(d,j.datefr+' · '+j.titre,j.medias);
   tocEntries.push({idx:di,date:j.datefr,titre:j.titre,n:j.medias.length?j.medias.length+' médias':''});
-  j.medias.forEach(function(m,mi){
-    var lab=j.datefr+' · '+j.titre;
-    if(m.v){
-      var sv=div('s-video');
-      sv.innerHTML='<div class="frame" data-vid="'+m.i+'">vidéo</div><div class="cap">'+lab+' · vidéo</div>';
-      add(sv,lab);
-    } else {
-      var sp=div('s-photo');
-      sp.innerHTML='<img data-src="'+big(m.i)+'" alt=""><div class="cap">'+lab+'</div>';
-      add(sp,lab);
-    }
+  d.addEventListener('click',function(ev){
+    var t=ev.target.closest('.tuile');
+    if(t) openLight(j,parseInt(t.dataset.mi,10));
   });
 });
 
@@ -197,25 +228,35 @@ var fn=div('s-text');
 fn.innerHTML='<h2>'+DECK.fin.titre+'</h2><p>'+DECK.fin.texte+'</p><div class="kanji" style="font-family:var(--font-head);color:var(--verm);font-size:2.4rem;margin-top:18px">ありがとう</div>';
 add(fn,'Fin');
 
+/* ---- lightbox ---- */
+var light=document.getElementById('light'), lmedia=document.getElementById('lmedia'), lcap=document.getElementById('lcap');
+var lJour=null, lIdx=0;
+function renderLight(){
+  var m=lJour.medias[lIdx];
+  if(m.v){
+    lmedia.innerHTML='<div class="frame"><iframe src="https://drive.google.com/file/d/'+m.i+'/preview" allow="autoplay" allowfullscreen></iframe></div>';
+  } else {
+    lmedia.innerHTML='<img src="'+big(m.i)+'" alt="">';
+  }
+  lcap.textContent=lJour.datefr+' · '+lJour.titre+' · '+(lIdx+1)+' / '+lJour.medias.length+(m.v?' · vidéo':'');
+}
+function openLight(j,mi){ lJour=j; lIdx=mi; renderLight(); light.classList.add('open'); }
+function closeLight(){ light.classList.remove('open'); lmedia.innerHTML=''; lJour=null; }
+function lightNext(){ if(lJour&&lIdx<lJour.medias.length-1){ lIdx++; renderLight(); } }
+function lightPrev(){ if(lJour&&lIdx>0){ lIdx--; renderLight(); } }
+document.getElementById('lclose').addEventListener('click',closeLight);
+document.getElementById('lnext').addEventListener('click',lightNext);
+document.getElementById('lprev').addEventListener('click',lightPrev);
+light.addEventListener('click',function(ev){ if(ev.target===light) closeLight(); });
+
 /* ---- navigation ---- */
 var cur=0,N=slides.length;
 function materialize(i){
   if(i<0||i>=N) return;
-  var el=slides[i].el;
-  el.querySelectorAll('img[data-src]').forEach(function(im){
+  slides[i].el.querySelectorAll('img[data-src]').forEach(function(im){
     im.src=im.dataset.src; im.removeAttribute('data-src');
     im.addEventListener('load',function(){ im.classList.add('ld'); });
   });
-}
-function mountVideo(i){
-  var f=slides[i].el.querySelector('[data-vid]');
-  if(f&&!f.querySelector('iframe')){
-    f.innerHTML='<iframe src="https://drive.google.com/file/d/'+f.dataset.vid+'/preview" allow="autoplay" allowfullscreen></iframe>';
-  }
-}
-function unmountVideo(i){
-  var f=slides[i].el.querySelector('[data-vid]');
-  if(f){ f.innerHTML='vidéo'; }
 }
 function mountMap(i){
   var f=slides[i].el.querySelector('[data-map]');
@@ -226,23 +267,26 @@ function mountMap(i){
 function go(i){
   if(i<0) i=0; if(i>=N) i=N-1;
   if(i===cur&&slides[cur].el.classList.contains('active')) return;
-  var prev=cur;
   slides.forEach(function(s,k){ s.el.classList.toggle('active',k===i); });
-  if(Math.abs(prev-i)>0&&slides[prev].el.querySelector('[data-vid]')) unmountVideo(prev);
   cur=i;
-  for(var k=i-1;k<=i+3;k++) materialize(k);
-  if(slides[i].el.querySelector('[data-vid]')) mountVideo(i);
+  for(var k=i-1;k<=i+1;k++) materialize(k);
   if(slides[i].el.querySelector('[data-map]')) mountMap(i);
   document.getElementById('num').textContent=(i+1)+' / '+N;
   document.getElementById('where').textContent=slides[i].label;
   document.getElementById('bar').style.width=((i)/(N-1)*100)+'%';
-  try{ localStorage.setItem('jp_pos',String(i)); }catch(e){}
+  try{ localStorage.setItem('jp_pos2',String(i)); }catch(e){}
 }
 function next(){ go(cur+1); } function prevS(){ go(cur-1); }
 document.getElementById('znext').addEventListener('click',next);
 document.getElementById('zprev').addEventListener('click',prevS);
 document.addEventListener('keydown',function(ev){
   if(gate.style.display!=='none'&&getComputedStyle(gate).display!=='none') return;
+  if(light.classList.contains('open')){
+    if(ev.key==='Escape') closeLight();
+    else if(ev.key==='ArrowRight'){ ev.preventDefault(); lightNext(); }
+    else if(ev.key==='ArrowLeft'){ ev.preventDefault(); lightPrev(); }
+    return;
+  }
   if(document.getElementById('toc').classList.contains('open')){
     if(ev.key==='Escape') toggleToc(false);
     return;
@@ -259,7 +303,10 @@ document.addEventListener('touchend',function(ev){
   if(tx===null) return;
   var dx=ev.changedTouches[0].clientX-tx, dy=ev.changedTouches[0].clientY-ty;
   tx=null;
-  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){ if(dx<0) next(); else prevS(); }
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){
+    if(light.classList.contains('open')){ if(dx<0) lightNext(); else lightPrev(); }
+    else { if(dx<0) next(); else prevS(); }
+  }
 },{passive:true});
 
 /* ---- sommaire ---- */
@@ -280,7 +327,7 @@ tocEntries.forEach(function(t){
 
 /* reprendre où on en était */
 var start=0;
-try{ var sp=parseInt(localStorage.getItem('jp_pos')||'0',10); if(sp>0&&sp<N) start=sp; }catch(e){}
+try{ var sp=parseInt(localStorage.getItem('jp_pos2')||'0',10); if(sp>0&&sp<N) start=sp; }catch(e){}
 go(start);
 })();
 </script>
