@@ -59,12 +59,12 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 .s-jour{flex-direction:row;align-items:stretch;justify-content:stretch;gap:0;padding-top:14px;padding-bottom:58px}
 .s-jour .recit{flex:0 0 380px;max-width:42%;padding:28px 28px 28px 6px;display:flex;flex-direction:column;min-height:0}
 .s-jour .rtext{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;padding-right:6px}
-.s-jour .recit .jour{color:var(--verm);letter-spacing:.3em;text-transform:uppercase;font-size:.78rem;font-variant-numeric:tabular-nums}
-.s-jour .recit h2{font-family:var(--font-head);font-size:clamp(1.5rem,2.6vw,2.2rem);margin:0;font-weight:700;text-wrap:balance}
-.s-jour .recit .resume{color:var(--paper-dim);line-height:1.8;font-size:.95rem;margin:0}
-.s-jour .recit .hl{display:flex;gap:8px;flex-wrap:wrap}
-.s-jour .recit .hl span{border:1px solid var(--line);color:var(--gold);padding:4px 11px;border-radius:999px;font-size:.74rem}
-.s-jour .recit .astuce{color:var(--paper-dim);font-size:.72rem;letter-spacing:.08em;margin-top:auto;padding-top:14px}
+.s-jour .recit .jour{color:var(--verm);letter-spacing:.3em;text-transform:uppercase;font-size:.72rem;font-variant-numeric:tabular-nums}
+.s-jour .recit h2{font-family:var(--font-head);font-size:clamp(1.25rem,2.1vw,1.7rem);margin:0;font-weight:700;text-wrap:balance}
+.s-jour .recit .resume{color:var(--paper-dim);line-height:1.65;font-size:.86rem;margin:0}
+.s-jour .recit .hl{display:flex;gap:7px;flex-wrap:wrap}
+.s-jour .recit .hl span{border:1px solid var(--line);color:var(--gold);padding:3px 10px;border-radius:999px;font-size:.68rem}
+.s-jour .recit .astuce{color:var(--paper-dim);font-size:.68rem;letter-spacing:.08em;margin-top:auto;padding-top:10px}
 .s-jour .mur{flex:1;overflow-y:auto;padding:8px 4px 8px 0;scrollbar-width:thin}
 .s-jour .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));grid-auto-rows:120px;grid-auto-flow:dense;gap:8px}
 .s-jour .tuile{position:relative;border-radius:8px;overflow:hidden;background:var(--ink2);cursor:zoom-in;border:1px solid transparent}
@@ -112,10 +112,10 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 #zprev{left:max(8px,env(safe-area-inset-left,0px))}
 
 /* ---------- mini-carte progression (en bas du récit) ---------- */
-#mini{display:none;width:100%;background:rgba(27,26,24,.6);border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px;margin-top:14px;flex:none}
+#mini{display:none;width:100%;background:rgba(27,26,24,.6);border:1px solid var(--line);border-radius:10px;padding:6px 6px 4px;margin-top:10px;flex:none}
 #mini.on{display:block}
-#mini svg{display:block;width:100%;height:auto;max-height:44vh}
-#mini .lbl{text-align:center;color:var(--paper-dim);font-size:.68rem;letter-spacing:.08em;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mini svg{display:block;width:100%;height:auto;max-height:30vh}
+#mini .lbl{text-align:center;color:var(--paper-dim);font-size:.64rem;letter-spacing:.08em;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #mini .lbl b{color:var(--gold);font-weight:600}
 #mini .coast{fill:#1b1a18;stroke:#3a362f;stroke-width:1}
 #mini .rfull{fill:none;stroke:#3f3b33;stroke-width:1.6;stroke-dasharray:3 3;stroke-linejoin:round}
@@ -147,7 +147,7 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
   <form id="gateForm">
     <div class="kanji">日本</div>
     <h1>Japon, mars 2026</h1>
-    <p>Carnet de voyage de Jad &amp; Rami</p>
+    <p>Carnet de voyage de Jad &amp; Ramy</p>
     <input type="password" id="pw" placeholder="Mot de passe" autocomplete="off" autofocus>
     <button type="submit">Entrer</button>
     <p class="err" id="gateErr"></p>
