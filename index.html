@@ -105,6 +105,8 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 #chrome .num{font-variant-numeric:tabular-nums;white-space:nowrap}
 #chrome button{background:none;border:1px solid var(--line);color:var(--paper-dim);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:.78rem}
 #chrome button:hover{color:var(--paper);border-color:var(--paper-dim)}
+#btnMus{min-width:34px}
+#btnMus.on{color:var(--gold);border-color:var(--gold)}
 #bar{position:fixed;top:0;left:0;height:3px;background:var(--verm);z-index:60;transition:width .3s;width:0}
 .nav{position:fixed;top:50%;transform:translateY(-50%);z-index:45;background:rgba(27,26,24,.72);border:1px solid var(--line);color:var(--paper-dim);border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.05rem;display:flex;align-items:center;justify-content:center}
 .nav:hover{color:var(--paper);border-color:var(--gold)}
@@ -160,6 +162,7 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 <button class="nav" id="znext" aria-label="Suivant">→</button>
 <div id="chrome">
   <span class="where" id="where"></span>
+  <button id="btnMus" aria-label="Musique">♪</button>
   <button id="btnToc">Sommaire</button>
   <span class="num" id="num"></span>
 </div>
@@ -192,8 +195,48 @@ document.getElementById('gateForm').addEventListener('submit',function(ev){
   if(document.getElementById('pw').value.trim().toLowerCase()===PW){
     gate.style.display='none';
     try{ sessionStorage.setItem('jp_ok','1'); }catch(e){}
+    startMus();
   } else { document.getElementById('gateErr').textContent='Mot de passe incorrect'; }
 });
+
+/* ---- musique de fond ---- */
+var MUSIC=[
+  {f:'audio/01-stay-with-me.mp3', t:'Miki Matsubara · Mayonaka no Door / Stay With Me'},
+  {f:'audio/02-plastic-love.mp3', t:'Mariya Takeuchi · Plastic Love'},
+  {f:'audio/03-flyday-chinatown.mp3', t:'Yasuha · Flyday Chinatown'},
+  {f:'audio/04-ride-on-time.mp3', t:'Tatsuro Yamashita · Ride on Time'},
+  {f:'audio/05-midnight-pretenders.mp3', t:'Tomoko Aran · Midnight Pretenders'}
+];
+var btnMus=document.getElementById('btnMus');
+var bgm=new Audio(); bgm.volume=.45;
+var mIdx=-1, musWanted=true;
+try{ if(localStorage.getItem('jp_mus')==='0') musWanted=false; }catch(e){}
+function musUI(){
+  btnMus.classList.toggle('on', musWanted);
+  btnMus.title=(mIdx>=0?MUSIC[mIdx].t:'Musique')+(musWanted?'':' (coupée)');
+}
+function playTrack(i){
+  mIdx=((i%MUSIC.length)+MUSIC.length)%MUSIC.length;
+  bgm.src=MUSIC[mIdx].f;
+  bgm.play().catch(function(){});
+  musUI();
+}
+function gateOpen(){ return gate.style.display!=='none'&&getComputedStyle(gate).display!=='none'; }
+function startMus(){ if(musWanted&&mIdx<0&&!gateOpen()) playTrack(0); }
+function musResume(){ if(musWanted&&mIdx>=0&&bgm.paused) bgm.play().catch(function(){}); }
+bgm.addEventListener('ended',function(){ if(musWanted) playTrack(mIdx+1); });
+btnMus.addEventListener('click',function(ev){
+  ev.stopPropagation();
+  if(musWanted){ musWanted=false; bgm.pause(); }
+  else { musWanted=true; if(mIdx<0) playTrack(0); else bgm.play().catch(function(){}); }
+  try{ localStorage.setItem('jp_mus',musWanted?'1':'0'); }catch(e){}
+  musUI();
+});
+['pointerdown','keydown'].forEach(function(evn){
+  var h=function(){ document.removeEventListener(evn,h); startMus(); };
+  document.addEventListener(evn,h);
+});
+musUI();
 
 function thumb(id){ return 'https://lh3.googleusercontent.com/d/'+id+'=w400'; }
 function big(id){ return 'https://lh3.googleusercontent.com/d/'+id+'=w1920'; }
@@ -254,13 +297,15 @@ function renderLight(){
   var m=lJour.medias[lIdx];
   if(m.v){
     lmedia.innerHTML='<div class="frame"><iframe src="https://drive.google.com/file/d/'+m.i+'/preview" allow="autoplay" allowfullscreen></iframe></div>';
+    bgm.pause(); // couper la musique pendant une vidéo
   } else {
     lmedia.innerHTML='<img src="'+big(m.i)+'" alt="">';
+    musResume();
   }
   lcap.textContent=lJour.datefr+' · '+lJour.titre+' · '+(lIdx+1)+' / '+lJour.medias.length+(m.v?' · vidéo':'');
 }
 function openLight(j,mi){ lJour=j; lIdx=mi; renderLight(); light.classList.add('open'); }
-function closeLight(){ light.classList.remove('open'); lmedia.innerHTML=''; lJour=null; }
+function closeLight(){ light.classList.remove('open'); lmedia.innerHTML=''; lJour=null; musResume(); }
 function lightNext(){ if(lJour&&lIdx<lJour.medias.length-1){ lIdx++; renderLight(); } }
 function lightPrev(){ if(lJour&&lIdx>0){ lIdx--; renderLight(); } }
 document.getElementById('lclose').addEventListener('click',closeLight);
