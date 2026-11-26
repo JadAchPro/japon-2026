@@ -129,6 +129,26 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
 #mini .halo{fill:var(--verm);animation:mhalo 1.6s ease-out infinite}
 @media (max-width:860px){#mini{margin:10px auto 0}}
 
+/* lecteur récit complet */
+.more{margin-top:12px;background:none;border:1px solid var(--gold);color:var(--gold);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.8rem;font-family:var(--font-body);align-self:flex-start}
+.more:hover{background:rgba(201,164,92,.14)}
+#reader{position:fixed;inset:0;background:rgba(14,13,12,.97);z-index:110;display:none;overflow-y:auto;padding:40px max(16px,env(safe-area-inset-right,0px)) 80px max(16px,env(safe-area-inset-left,0px))}
+#reader.open{display:block}
+#reader .in{max-width:720px;margin:0 auto}
+#reader .head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+#reader .d{color:var(--verm);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;font-variant-numeric:tabular-nums}
+#reader h2{font-family:var(--font-head);font-weight:500;font-size:1.5rem;margin:4px 0 0}
+#reader .head button{background:none;border:1px solid var(--line);color:var(--paper);border-radius:8px;padding:6px 14px;cursor:pointer;flex:none}
+#reader .head button:hover{border-color:var(--gold)}
+#reader .body{font-size:.95rem;line-height:1.7;color:var(--paper)}
+#reader .body p{margin:0 0 .85em}
+#reader .body strong{font-weight:600}
+#reader .body h3{font-family:var(--font-head);font-weight:500;font-size:1.22rem;margin:1.7em 0 .5em;color:var(--gold)}
+#reader .body h4{font-size:.88rem;margin:1.4em 0 .4em;color:var(--paper-dim);letter-spacing:.08em;text-transform:uppercase}
+#reader .body h5,#reader .body h6{font-size:.8rem;margin:1.1em 0 .3em;color:var(--paper-dim);letter-spacing:.06em;text-transform:uppercase}
+#reader .body hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
+#reader .body ul{margin:0 0 .85em 1.2em;padding:0}
+
 /* sommaire */
 #toc{position:fixed;inset:0;background:rgba(14,13,12,.96);z-index:100;display:none;overflow-y:auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 60px}
 #toc.open{display:block}
@@ -167,6 +187,16 @@ body{background:var(--ink);color:var(--paper);font-family:var(--font-body);font-
   <span class="num" id="num"></span>
 </div>
 <div id="mini"></div>
+
+<div id="reader">
+  <div class="in">
+    <div class="head">
+      <div><div class="d" id="rdDate"></div><h2 id="rdTitre"></h2></div>
+      <button id="rdClose">Fermer ✕</button>
+    </div>
+    <div class="body" id="rdBody"></div>
+  </div>
+</div>
 
 <div id="toc">
   <div class="in">
@@ -276,10 +306,12 @@ DECK.jours.forEach(function(j,ji){
     return '<div class="'+cls+'" data-mi="'+mi+'"><img data-src="'+thumb(m.i)+'" alt="" loading="lazy">'+play+'</div>';
   }).join('');
   var mur=j.medias.length?'<div class="mur"><div class="grille">'+tuiles+'</div></div>':'<div class="mur"><p class="vide">Pas de photos sélectionnées pour cette journée.</p></div>';
-  d.innerHTML='<div class="recit"><div class="rtext"><div class="jour">'+j.datefr+' · jour '+(ji+1)+'</div><h2>'+j.titre+'</h2><p class="resume">'+j.resume+'</p>'+hl+astuce+'</div></div>'+mur;
+  var more=j.long?'<button class="more">Voir plus · récit complet</button>':'';
+  d.innerHTML='<div class="recit"><div class="rtext"><div class="jour">'+j.datefr+' · jour '+(ji+1)+'</div><h2>'+j.titre+'</h2><p class="resume">'+j.resume+'</p>'+hl+more+astuce+'</div></div>'+mur;
   var di=add(d,j.datefr+' · '+j.titre,j.medias);
   tocEntries.push({idx:di,date:j.datefr,titre:j.titre,n:j.medias.length?j.medias.length+' médias':''});
   d.addEventListener('click',function(ev){
+    if(ev.target.closest('.more')){ openReader(j); return; }
     var t=ev.target.closest('.tuile');
     if(t) openLight(j,parseInt(t.dataset.mi,10));
   });
@@ -360,6 +392,10 @@ document.addEventListener('keydown',function(ev){
     else if(ev.key==='ArrowLeft'){ ev.preventDefault(); lightPrev(); }
     return;
   }
+  if(reader.classList.contains('open')){
+    if(ev.key==='Escape') closeReader();
+    return;
+  }
   if(document.getElementById('toc').classList.contains('open')){
     if(ev.key==='Escape') toggleToc(false);
     return;
@@ -378,9 +414,21 @@ document.addEventListener('touchend',function(ev){
   tx=null;
   if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){
     if(light.classList.contains('open')){ if(dx<0) lightNext(); else lightPrev(); }
-    else { if(dx<0) next(); else prevS(); }
+    else if(!reader.classList.contains('open')&&!toc.classList.contains('open')){ if(dx<0) next(); else prevS(); }
   }
 },{passive:true});
+
+/* ---- lecteur récit complet ---- */
+var reader=document.getElementById('reader');
+function openReader(j){
+  document.getElementById('rdDate').textContent=j.datefr+' 2026';
+  document.getElementById('rdTitre').textContent=j.titre;
+  document.getElementById('rdBody').innerHTML=j.long||'';
+  reader.scrollTop=0;
+  reader.classList.add('open');
+}
+function closeReader(){ reader.classList.remove('open'); }
+document.getElementById('rdClose').addEventListener('click',closeReader);
 
 /* ---- sommaire ---- */
 var toc=document.getElementById('toc');
